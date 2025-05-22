@@ -11,6 +11,7 @@ console.log(`SOCKS5服务器: ${SOCKS_HOST}:${SOCKS_PORT}`)
 
 // 连接到代理服务器
 const socket = io(PROXY_SERVER_URL, {
+  path: '/proxy',
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,

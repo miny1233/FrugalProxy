@@ -76,5 +76,7 @@ io.on("connection", (socket) => {
     })
 })
 
-io.listen(port);
+io.listen(port,{
+    path: '/proxy'
+});
 console.log(`正在监听 ${port}`);
