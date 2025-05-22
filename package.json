@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.5.0",
+    "net": "^1.0.2",
     "node-cache": "^5.1.2",
     "socket.io": "^4.8.1"
   }
