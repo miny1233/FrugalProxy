@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "nodejs代理程序",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start:server": "node server.js",
+    "start:client": "node client.js"
   },
   "author": "miny1233",
   "license": "MIT",
@@ -12,6 +14,7 @@
     "net": "^1.0.2",
     "node-cache": "^5.1.2",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "socksv5": "^0.0.6"
   }
 }
