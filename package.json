@@ -1,0 +1,15 @@
+{
+  "name": "frugalproxy",
+  "version": "1.0.0",
+  "description": "nodejs代理程序",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "miny1233",
+  "license": "MIT",
+
+  "dependencies": {
+    "node-cache": "^5.1.2",
+    "socket.io": "^4.8.1"
+  }
+}
