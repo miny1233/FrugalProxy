@@ -1,6 +1,8 @@
 const sockv5 = require('socksv5')
 const { io } = require('socket.io-client')
+const dotenv = require('dotenv')
 
+dotenv.config();
 // 配置部分
 const PROXY_SERVER_URL = process.env.PROXY_SERVER || 'http://localhost:80' // 代理服务器地址
 const SOCKS_PORT = process.env.SOCKS_PORT || 1080 // 本地SOCKS5服务器端口

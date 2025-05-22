@@ -36,15 +36,19 @@ io.on("connection", (socket) => {
             client.on('end', () => {
                 console.log(`目标服务器连接关闭: ${des_ip}:${des_port}`);
                 delete conn_map[socket.id];
-                socket.emit('server-end', { message: '目标服务器关闭连接' });
+
+                try {
+                    socket.emit('server-end', { message: '目标服务器关闭连接' });
+                } catch (e) {}
             });
         });
 
         client.on('error',(err)=> {
             console.log('连接失败！ 正在通知客户端断开');
             console.error(`连接错误: ${err.message}`);
-
-            socket.emit('disconnect', '连接目标服务器失败');
+            try {
+                socket.emit('disconnect', '连接目标服务器失败');
+            } catch (e) {}
         })
     })
 
