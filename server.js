@@ -1,11 +1,14 @@
 const { Server } = require('socket.io');
+const http = require('http')
 const net = require('net')
 
 console.log('正在启动服务端')
 
 const port = process.env.port || 80;
+const bind_ip = process.env.bind_ip || 'localhost';
 
-const io = new Server({});
+const http_server = http.createServer();
+const io = new Server(http_server, {path: '/proxy'});
 const conn_map = new Map();
 
 io.on("connection", (socket) => {
@@ -76,7 +79,5 @@ io.on("connection", (socket) => {
     })
 })
 
-io.listen(port,{
-    path: '/proxy'
-});
+http_server.listen(port, bind_ip);
 console.log(`正在监听 ${port}`);
