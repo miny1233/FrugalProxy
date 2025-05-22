@@ -19,6 +19,8 @@ io.on("connection", (socket) => {
 
     socket.on("client-set-conn",(des_ip,des_port) => {
         
+        console.log(`来自客户端的连接请求 ${des_ip}:${des_port}`)
+
         const client = net.createConnection({
             host: des_ip,
             port: des_port,
