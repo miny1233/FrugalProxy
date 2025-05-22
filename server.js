@@ -41,7 +41,8 @@ io.on("connection", (socket) => {
                 console.log(`目标服务器连接关闭: ${des_ip}:${des_port}`);
                 delete conn_map[socket.id];
 
-                socket.emit('server-end', { message: '目标服务器关闭连接' });
+                client.end();
+                // socket.emit('server-end', { message: '目标服务器关闭连接' });
             });
         });
 
@@ -49,25 +50,26 @@ io.on("connection", (socket) => {
             console.log('连接失败！ 正在通知客户端断开');
             console.error(`连接错误: ${err.message}`);
             
-            socket.emit('disconnect', '连接目标服务器失败');
+            client.end();
+            //socket.emit('disconnect', '连接目标服务器失败');
         })
     })
 
     socket.on("client-data",async (data) => {
         
         // 由于nodejs的单线程异步，那么当有定义时一定完成了连接
-        if(conn_map[socket.id] === undefined)
+        while (conn_map[socket.id] === undefined)
         {   
             console.log('未与目标服务器连接，正在等待连接');
             await new Promise(timer => setTimeout(timer,50));
         }
         
-        // 再次检查连接是否存在
+        /* 再次检查连接是否存在
         if(conn_map[socket.id] === undefined) {
             console.log('连接仍不存在，无法发送数据');
             socket.emit('server-error', { message: '未能建立到目标服务器的连接' });
             return;
-        }
+        } */
         
         const client = conn_map[socket.id];
         client.write(data);
