@@ -1,6 +1,9 @@
 const { Server } = require('socket.io');
 const http = require('http')
 const net = require('net')
+const dotenv = require('dotenv')
+
+dotenv.config();
 
 console.log('正在启动服务端')
 
@@ -19,6 +22,7 @@ io.on("connection", (socket) => {
         const client = net.createConnection({
             host: des_ip,
             port: des_port,
+            timeout: 1000,
         },() => {    
             console.log('成功连接到服务器')
             conn_map[socket.id] = client;
