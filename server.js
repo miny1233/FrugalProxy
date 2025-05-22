@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
         // 由于nodejs的单线程异步，那么当有定义时一定完成了连接
         if(conn_map[socket.id] === undefined)
         {   
+            console.log('未与目标服务器连接，正在等待连接');
             await new Promise(timer => setTimeout(timer,50));
         }
         const client = conn_map[socket.id];
