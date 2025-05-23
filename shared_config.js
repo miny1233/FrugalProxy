@@ -14,7 +14,7 @@ function decode(ec) {
 }
 
 function sio_send(event, socket, data) {
-    socket.emit(event, encode(data));
+   process.nextTick(() => socket.emit(event, encode(data)));
 }
 
 function sio_recv(data) {

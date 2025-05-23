@@ -24,6 +24,9 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 连接到代理服务器
     const socket = io(PROXY_SERVER_URL, {
       path: '/proxy',
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 5000  // 每 5 秒尝试重连
     })
 
     // 为 Socket.IO 注册事件
@@ -40,7 +43,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
 
     // 处理服务器数据
     socket.on('server-data', (data) => {
-      console.log('收到数据')
         try {
             const decodedData = shared.sio_recv(data)
             sockClient.write(decodedData);
@@ -61,8 +63,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
 
     // 监听来自本地客户端的数据
     sockClient.on('data', (data) => {
-      // 将数据发送到代理服务器
-      console.log('发送数据')
       shared.sio_send('client-data', socket, data)
     })
 
