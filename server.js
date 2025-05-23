@@ -14,7 +14,7 @@ const bind_ip = process.env.bind_ip || 'localhost';
 // const http_server = http.createServer();
 const io = new Server({
     pingInterval: 1000,
-    pingTimeout: 10000,
+    pingTimeout: 30000,
     maxHttpBufferSize: 1e7,
 
     connectionStateRecovery: {
