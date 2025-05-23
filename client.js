@@ -1,10 +1,11 @@
 const sockv5 = require('socksv5')
 const { io } = require('socket.io-client')
 const dotenv = require('dotenv')
+const shared = require('./shared_config');
 
 dotenv.config();
 // 配置部分
-const PROXY_SERVER_URL = process.env.PROXY_SERVER || 'http://localhost:80' // 代理服务器地址
+const PROXY_SERVER_URL = process.env.PROXY_SERVER || 'http://localhost:8080' // 代理服务器地址
 const SOCKS_PORT = process.env.SOCKS_PORT || 1080 // 本地SOCKS5服务器端口
 const SOCKS_HOST = process.env.SOCKS_HOST || 'localhost' // 本地SOCKS5服务器地址
 
@@ -58,7 +59,7 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 处理服务器数据
     socket.on('server-data', (data) => {
         try {
-            const decodedData = Buffer.from(data.data, 'base64')
+            const decodedData = shared.sio_recv(data)
             sockClient.write(decodedData);
         } catch (err) {
             console.error('处理服务器数据时出错:', err)
@@ -82,15 +83,15 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 监听来自本地客户端的数据
     sockClient.on('data', (data) => {
       // 将数据发送到代理服务器
-      socket.emit('client-data', data)
+      shared.sio_send('client-data', socket, data)
     })
 
     // 监听连接关闭
     sockClient.on('close', () => {
+
       console.log(`连接关闭 [${info.dstAddr}:${info.dstPort}]`)
-      // delete activeConnections[clientId]
-      // 一并关闭socket.io
       socket.disconnect();
+
     })
 
     // 监听连接错误
@@ -107,18 +108,3 @@ sock_server.listen(SOCKS_PORT, SOCKS_HOST, function() {
 
 // 不需要认证
 sock_server.useAuth(sockv5.auth.None())
-
-// 优雅退出处理
-process.on('SIGINT', () => {
-  console.log('正在关闭...')
-  Object.values(activeConnections).forEach(conn => {
-    if (conn.socket && !conn.socket.destroyed) {
-      conn.socket.end()
-    }
-  })
-  socket.disconnect()
-  sock_server.close(() => {
-    console.log('SOCKS5服务器已关闭')
-    process.exit(0)
-  })
-})

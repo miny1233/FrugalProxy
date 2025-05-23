@@ -1,7 +1,8 @@
 const { Server } = require('socket.io');
-const http = require('http')
-const net = require('net')
+const http = require('http');
+const net = require('net');
 const dotenv = require('dotenv')
+const shared = require('./shared_config')
 
 dotenv.config();
 
@@ -32,10 +33,7 @@ io.on("connection", (socket) => {
             // 监听来自目标服务器的数据
             client.on('data', (data) => {
                 // 将目标服务器的数据转发给客户端
-                socket.emit('server-data', {
-                    clientId: socket.id,
-                    data: data.toString('base64') // 转为base64发送
-                });
+                shared.sio_send('server-data', socket, data);
             });
             
             // 监听目标服务器连接关闭
@@ -59,6 +57,8 @@ io.on("connection", (socket) => {
 
     socket.on("client-data",async (data) => {
         
+        const origin_data = shared.sio_recv(data);
+
         // 由于nodejs的单线程异步，那么当有定义时一定完成了连接
         while (conn_map[socket.id] === undefined)
         {   
@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
         } */
         
         const client = conn_map[socket.id];
-        client.write(data);
+        client.write(origin_data);
     })
 
     socket.on("disconnect", (reason) => {
