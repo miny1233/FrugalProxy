@@ -14,7 +14,7 @@ const bind_ip = process.env.bind_ip || 'localhost';
 // const http_server = http.createServer();
 const io = new Server({
     pingTimeout: 60000,
-    pingInterval: 500,
+    maxHttpBufferSize: 1e7,
 });
 const conn_map = new Map();
 
@@ -51,7 +51,7 @@ io.on("connection", (socket) => {
             });
         });
         
-        socket.on("client-data",async (data) => {
+        socket.on("client-data",(data) => {
         
             const origin_data = shared.sio_recv(data);
 
@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
             client.write(origin_data);
         })
 
-        client.on('error',(err)=> {
+        client.on('error',(err) => {
             console.log('连接失败！ 正在通知客户端断开');
             console.error(`连接错误: ${err.message}`);
             
