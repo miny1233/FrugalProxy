@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
         const client = net.createConnection({
             host: des_ip,
             port: des_port,
-            timeout: 1000,
+            timeout: 10000,
         },() => {    
             console.log('成功连接到服务器')
             // 不等待延迟输入
@@ -45,7 +45,6 @@ io.on("connection", (socket) => {
                 delete conn_map[socket.id];
 
                 client.end();
-                // socket.emit('server-end', { message: '目标服务器关闭连接' });
             });
         });
 
@@ -54,7 +53,6 @@ io.on("connection", (socket) => {
             console.error(`连接错误: ${err.message}`);
             
             client.end();
-            //socket.emit('disconnect', '连接目标服务器失败');
         })
     })
 
@@ -62,19 +60,16 @@ io.on("connection", (socket) => {
         
         const origin_data = shared.sio_recv(data);
 
+        if (conn_map[socket.id] === undefined)
+        {
+            console.log(`[${socket.id}] 未与目标服务器连接，正在等待连接`);
+        }
+
         // 由于nodejs的单线程异步，那么当有定义时一定完成了连接
         while (conn_map[socket.id] === undefined)
         {   
-            console.log('未与目标服务器连接，正在等待连接');
             await new Promise(timer => setTimeout(timer,1));
         }
-        
-        /* 再次检查连接是否存在
-        if(conn_map[socket.id] === undefined) {
-            console.log('连接仍不存在，无法发送数据');
-            socket.emit('server-error', { message: '未能建立到目标服务器的连接' });
-            return;
-        } */
         
         const client = conn_map[socket.id];
         client.write(origin_data);

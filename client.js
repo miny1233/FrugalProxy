@@ -12,9 +12,6 @@ const SOCKS_HOST = process.env.SOCKS_HOST || 'localhost' // 本地SOCKS5服务�
 console.log(`代理服务器: ${PROXY_SERVER_URL}`)
 console.log(`SOCKS5服务器: ${SOCKS_HOST}:${SOCKS_PORT}`)
 
-// 连接映射 - 使用对象而不是Map，因为要使用socket.id作为键
-const activeConnections = {}
-
 // 创建SOCKS5服务器
 const sock_server = sockv5.createServer((info, accept, deny) => {
    // const clientId = `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -27,22 +24,13 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 连接到代理服务器
     const socket = io(PROXY_SERVER_URL, {
       path: '/proxy',
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 20000
+//      reconnection: true,
+//      reconnectionAttempts: Infinity,
+//      reconnectionDelay: 1000,
+//      reconnectionDelayMax: 5000,
+//      timeout: 20000
     })
     
-    /* 将连接保存到映射中
-    activeConnections[clientId] = {
-      socket: sockClient,
-      socketId: socket.id, // 保存当前socket.id
-      target: {
-        host: info.dstAddr,
-        port: info.dstPort
-      }
-    }*/
 
     // 为 Socket.IO 注册事件
     socket.on('connect', () => {
