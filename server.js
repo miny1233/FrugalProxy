@@ -14,7 +14,7 @@ const bind_ip = process.env.bind_ip || 'localhost';
 // const http_server = http.createServer();
 const io = new Server({
     pingTimeout: 60000,
-    pingInterval: 1000,
+    pingInterval: 500,
 });
 const conn_map = new Map();
 
@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
             host: des_ip,
             port: des_port,
             timeout: 10000,
+            noDelay: true,
         },() => {    
             console.log('成功连接到服务器')
             // 不等待延迟输入
