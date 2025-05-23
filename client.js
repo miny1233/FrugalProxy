@@ -24,9 +24,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 连接到代理服务器
     const socket = io(PROXY_SERVER_URL, {
       path: '/proxy',
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 5000  // 每 5 秒尝试重连
     })
 
     // 为 Socket.IO 注册事件
@@ -37,7 +34,7 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     socket.on('disconnect', (reason) => {
         console.log(`与代理服务器连接断开: ${reason || '未知原因'}`)
         
-        // 断开 Sock 连接
+        // 断开 Sock 连接 
         sockClient.end();
     })
 
