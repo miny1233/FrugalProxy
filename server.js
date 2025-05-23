@@ -54,8 +54,6 @@ io.on("connection", (socket) => {
         socket.on("client-data",(data) => {
         
             const origin_data = shared.sio_recv(data);
-
-            const client = conn_map[socket.id];
             client.write(origin_data);
         })
 
