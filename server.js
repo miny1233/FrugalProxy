@@ -12,7 +12,10 @@ const port = process.env.port || 80;
 const bind_ip = process.env.bind_ip || 'localhost';
 
 // const http_server = http.createServer();
-const io = new Server({timeout: 60000});
+const io = new Server({
+    pingTimeout: 60000,
+    pingInterval: 1000,
+});
 const conn_map = new Map();
 
 io.on("connection", (socket) => {
@@ -29,7 +32,6 @@ io.on("connection", (socket) => {
         },() => {    
             console.log('成功连接到服务器')
             // 不等待延迟输入
-            client.setNoDelay(true);
 
             conn_map[socket.id] = client;
             
@@ -47,6 +49,8 @@ io.on("connection", (socket) => {
                 client.end();
             });
         });
+
+        client.setNoDelay(true);
 
         client.on('error',(err)=> {
             console.log('连接失败！ 正在通知客户端断开');
@@ -91,5 +95,5 @@ process.on('uncaughtException', (err) => {
 });
 
 //http_server.listen(port, bind_ip);
-io.listen(port,{path: '/proxy', pingTimeout: 60000});
+io.listen(port,{path: '/proxy'});
 console.log(`正在监听 ${port}`);
