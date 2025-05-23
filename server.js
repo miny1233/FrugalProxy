@@ -13,8 +13,14 @@ const bind_ip = process.env.bind_ip || 'localhost';
 
 // const http_server = http.createServer();
 const io = new Server({
-    pingTimeout: 60000,
+    pingInterval: 1000,
+    pingTimeout: 10000,
     maxHttpBufferSize: 1e7,
+
+    connectionStateRecovery: {
+        maxDisconnectionDuration: Infinity,
+        skipMiddlewares: true,
+    }
 });
 const conn_map = new Map();
 

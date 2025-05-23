@@ -28,7 +28,7 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
 
     // 为 Socket.IO 注册事件
     socket.on('connect', () => {
-        console.log(`已连接到代理服务器, ID: ${socket.id}`)
+        console.log(`已连接到代理服务器, ID: ${socket.id}, 连接模式 ${socket.io.engine.transport.name}`)
     })
 
     socket.on('disconnect', (reason) => {
