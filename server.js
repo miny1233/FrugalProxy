@@ -12,7 +12,7 @@ const port = process.env.port || 80;
 const bind_ip = process.env.bind_ip || 'localhost';
 
 // const http_server = http.createServer();
-const io = new Server({});
+const io = new Server({timeout: 60000});
 const conn_map = new Map();
 
 io.on("connection", (socket) => {
