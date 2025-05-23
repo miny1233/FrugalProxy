@@ -25,7 +25,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     const socket = io(PROXY_SERVER_URL, {
       path: '/proxy',
     })
-    
 
     // 为 Socket.IO 注册事件
     socket.on('connect', () => {
@@ -41,6 +40,7 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
 
     // 处理服务器数据
     socket.on('server-data', (data) => {
+      console.log('收到数据')
         try {
             const decodedData = shared.sio_recv(data)
             sockClient.write(decodedData);
@@ -59,13 +59,10 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
         console.log('服务器关闭连接:', data.message)
     })
 
-
-    // 向代理服务器发起连接请求
-    socket.emit('client-set-conn', info.dstAddr, info.dstPort)
-
     // 监听来自本地客户端的数据
     sockClient.on('data', (data) => {
       // 将数据发送到代理服务器
+      console.log('发送数据')
       shared.sio_send('client-data', socket, data)
     })
 
@@ -74,7 +71,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
 
       console.log(`连接关闭 [${info.dstAddr}:${info.dstPort}]`)
       socket.disconnect();
-
     })
 
     // 监听连接错误
@@ -82,6 +78,9 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
       console.error(`连接错误 [${info.dstAddr}:${info.dstPort}]:`, err.message)
       socket.disconnect();
     })
+
+    // 所有操作已注册 发送请求
+    socket.emit('client-set-conn', info.dstAddr, info.dstPort)
 })
 
 // 启动SOCKS5服务器

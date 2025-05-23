@@ -50,8 +50,14 @@ io.on("connection", (socket) => {
                 client.end();
             });
         });
+        
+        socket.on("client-data",async (data) => {
+        
+            const origin_data = shared.sio_recv(data);
 
-        //client.setNoDelay(true);
+            const client = conn_map[socket.id];
+            client.write(origin_data);
+        })
 
         client.on('error',(err)=> {
             console.log('连接失败！ 正在通知客户端断开');
@@ -59,25 +65,6 @@ io.on("connection", (socket) => {
             
             client.end();
         })
-    })
-
-    socket.on("client-data",async (data) => {
-        
-        const origin_data = shared.sio_recv(data);
-
-        if (conn_map[socket.id] === undefined)
-        {
-            console.log(`[${socket.id}] 未与目标服务器连接，正在等待连接`);
-        }
-
-        // 由于nodejs的单线程异步，那么当有定义时一定完成了连接
-        while (conn_map[socket.id] === undefined)
-        {   
-            await new Promise(timer => setTimeout(timer,1));
-        }
-        
-        const client = conn_map[socket.id];
-        client.write(origin_data);
     })
 
     socket.on("disconnect", (reason) => {
