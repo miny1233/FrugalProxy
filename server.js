@@ -28,6 +28,9 @@ io.on("connection", (socket) => {
             timeout: 1000,
         },() => {    
             console.log('成功连接到服务器')
+            // 不等待延迟输入
+            client.setNoDelay(true);
+
             conn_map[socket.id] = client;
             
             // 监听来自目标服务器的数据
@@ -63,7 +66,7 @@ io.on("connection", (socket) => {
         while (conn_map[socket.id] === undefined)
         {   
             console.log('未与目标服务器连接，正在等待连接');
-            await new Promise(timer => setTimeout(timer,50));
+            await new Promise(timer => setTimeout(timer,1));
         }
         
         /* 再次检查连接是否存在
