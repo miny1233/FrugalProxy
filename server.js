@@ -11,8 +11,8 @@ console.log('正在启动服务端')
 const port = process.env.port || 80;
 const bind_ip = process.env.bind_ip || 'localhost';
 
-const http_server = http.createServer();
-const io = new Server(http_server, {path: '/proxy'});
+// const http_server = http.createServer();
+const io = new Server({});
 const conn_map = new Map();
 
 io.on("connection", (socket) => {
@@ -95,5 +95,6 @@ process.on('uncaughtException', (err) => {
     console.error('未捕获的异常:', err);
 });
 
-http_server.listen(port, bind_ip);
+//http_server.listen(port, bind_ip);
+io.listen(port,{path: '/proxy'});
 console.log(`正在监听 ${port}`);
