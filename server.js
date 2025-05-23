@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
             });
         });
 
-        client.setNoDelay(true);
+        //client.setNoDelay(true);
 
         client.on('error',(err)=> {
             console.log('连接失败！ 正在通知客户端断开');
