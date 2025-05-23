@@ -91,5 +91,5 @@ process.on('uncaughtException', (err) => {
 });
 
 //http_server.listen(port, bind_ip);
-io.listen(port,{path: '/proxy'});
+io.listen(port,{path: '/proxy', pingTimeout: 60000});
 console.log(`正在监听 ${port}`);

@@ -24,7 +24,6 @@ const sock_server = sockv5.createServer((info, accept, deny) => {
     // 连接到代理服务器
     const socket = io(PROXY_SERVER_URL, {
       path: '/proxy',
-      timeout: 60000,
     })
     
 
